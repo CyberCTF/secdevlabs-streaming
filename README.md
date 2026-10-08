@@ -15,7 +15,7 @@ the vendored app folder (see [UPSTREAM.md](UPSTREAM.md)).
 
 ```bash
 isoloom generate
-isoloom up docker
+isoloom run docker
 ```
 
 Then open http://localhost:10007/. The page calls the backend at http://localhost:8080/live. The same spec runs as Docker on a local VM (`docker-vm`), on a cloud VM
