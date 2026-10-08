@@ -1,0 +1,14 @@
+{
+  "title": "secDevLabs Streaming",
+  "description": "A live-streaming site built with Angular and Spring Boot on MariaDB, where viewers chat during a live. Chat messages are stored by the API and inserted into every viewer's page as HTML.",
+  "question": "Send a chat message that runs your own JavaScript in the browser of every viewer of the live.",
+  "category": "WEB",
+  "difficulty": 1,
+  "evidence_kind": "SECRET",
+  "capabilities": [
+    "stored-xss",
+    "injection",
+    "angular",
+    "spring-boot"
+  ]
+}

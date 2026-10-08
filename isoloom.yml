@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://www.isoloom.com/schema/v1.json
+# Streaming (secDevLabs, by Globo.com) as an Isoloom spec: an Angular live-streaming page with a
+# Spring Boot backend, whose chat messages are a stored cross-site scripting flaw. Vendored
+# unchanged from the app folder owasp-top10-2021-apps/a3/streaming of secDevLabs
+# (build/backend/app/, build/frontend/app/, the rest in app/), built by overlays of upstream's
+# Dockerfiles, with its MariaDB machine. The page calls the backend at http://localhost:8080, so
+# the backend keeps upstream's published port. `isoloom generate`, then `isoloom up docker`.
+version: 1
+name: secdevlabs-streaming
+
+networks:
+  lab: { cidr: 10.60.99.0/24, internet: false }
+
+machines:
+  db:
+    networks: { lab: 20 }
+    services: [{ port: 3306, name: mariadb }]
+    resources: { cpus: 1, memory_mb: 512 }
+    volumes: { data: /var/lib/mysql }
+    docker:
+      build: build/db
+
+  backend:
+    networks: { lab: 11 }
+    services: [{ port: 8080, name: api, http: true, publish: 8080 }]
+    resources: { cpus: 1, memory_mb: 1024 }
+    depends_on: [db]
+    docker:
+      build: build/backend
+
+  frontend:
+    networks: { lab: 10 }
+    services: [{ port: 80, name: web, http: true, publish: 10007 }]
+    resources: { cpus: 1, memory_mb: 256 }
+    depends_on: [backend]
+    docker:
+      build: build/frontend
+
+checks:
+  - name: the page answers
+    http: http://frontend/
+    wait: 240
+  - name: the backend lists the lives
+    http: http://backend:8080/live
+    wait: 180
+  - name: seeded lives are served and the page renders messages with innerHTML
+    script: checks/lives.sh
+
+message: |
+  Streaming answers at http://localhost:{{ machines.frontend.services.0.publish }}/ and its
+  backend at http://localhost:{{ machines.backend.services.0.publish }}/live. Join a live and
+  chat: every viewer sees your messages.
