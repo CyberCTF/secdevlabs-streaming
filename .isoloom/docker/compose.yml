@@ -9,6 +9,9 @@ services:
   db:
     build:
       context: ../../build/db
+      labels:
+        isoloom.managed: 'true'
+        isoloom.environment: secdevlabs-streaming
     image: isoloom/secdevlabs-streaming-db
     platform: linux/amd64
     hostname: db
@@ -39,6 +42,8 @@ services:
           memory: 512M
     labels:
       isoloom.service.mariadb: tcp:3306
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
     restart: unless-stopped
   db-routes:
     image: alpine:3.20
@@ -60,9 +65,15 @@ services:
       db:
         condition: service_started
     restart: unless-stopped
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   backend:
     build:
       context: ../../build/backend
+      labels:
+        isoloom.managed: 'true'
+        isoloom.environment: secdevlabs-streaming
     image: isoloom/secdevlabs-streaming-backend
     platform: linux/amd64
     hostname: backend
@@ -98,6 +109,8 @@ services:
           memory: 1024M
     labels:
       isoloom.service.api: http:8080
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
     restart: unless-stopped
   backend-routes:
     image: alpine:3.20
@@ -119,9 +132,15 @@ services:
       backend:
         condition: service_started
     restart: unless-stopped
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   frontend:
     build:
       context: ../../build/frontend
+      labels:
+        isoloom.managed: 'true'
+        isoloom.environment: secdevlabs-streaming
     image: isoloom/secdevlabs-streaming-frontend
     platform: linux/amd64
     hostname: frontend
@@ -157,6 +176,8 @@ services:
           memory: 256M
     labels:
       isoloom.service.web: http:80
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
     restart: unless-stopped
   frontend-routes:
     image: alpine:3.20
@@ -178,6 +199,9 @@ services:
       frontend:
         condition: service_started
     restart: unless-stopped
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   isoloom-check:
     image: curlimages/curl:8.11.1
     profiles:
@@ -207,6 +231,9 @@ services:
         condition: service_healthy
       frontend-routes:
         condition: service_healthy
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   isoloom-check-db:
     image: curlimages/curl:8.11.1
     profiles:
@@ -230,6 +257,9 @@ services:
         condition: service_healthy
       frontend-routes:
         condition: service_healthy
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   isoloom-check-backend:
     image: curlimages/curl:8.11.1
     profiles:
@@ -253,6 +283,9 @@ services:
         condition: service_healthy
       frontend-routes:
         condition: service_healthy
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   isoloom-check-frontend:
     image: curlimages/curl:8.11.1
     profiles:
@@ -276,6 +309,9 @@ services:
         condition: service_healthy
       frontend-routes:
         condition: service_healthy
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   isoloom-probe-amd64:
     image: busybox:1.37.0-musl
     platform: linux/amd64
@@ -287,12 +323,24 @@ services:
     - isoloom-probe-amd64:/probe
     network_mode: none
     restart: no
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
 networks:
   lab:
     ipam:
       config:
       - subnet: 10.60.99.0/24
         gateway: 10.60.99.1
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
 volumes:
-  db-data: {}
-  isoloom-probe-amd64: {}
+  db-data:
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
+  isoloom-probe-amd64:
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
