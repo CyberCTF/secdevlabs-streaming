@@ -147,8 +147,13 @@ services:
     networks:
       lab:
         ipv4_address: 10.60.99.10
+    environment:
+      CTF_FLAG_MAIN: ${CTF_FLAG_MAIN:-}
     ports:
     - ${ISOLOOM_PUBLISH_ADDRESS:-127.0.0.1}:${ISOLOOM_PUBLISH_FIXED:+10007}:80
+    volumes:
+    - frontend-ctf:/ctf
+    - isoloom-probe-amd64:/.isoloom-probe:ro
     healthcheck:
       test:
       - CMD
@@ -160,8 +165,6 @@ services:
       timeout: 3s
       retries: 60
       start_period: 10s
-    volumes:
-    - isoloom-probe-amd64:/.isoloom-probe:ro
     depends_on:
       isoloom-probe-amd64:
         condition: service_completed_successfully
@@ -202,6 +205,26 @@ services:
     labels:
       isoloom.managed: 'true'
       isoloom.environment: secdevlabs-streaming
+  frontend-init-1:
+    image: isoloom/secdevlabs-streaming-frontend
+    entrypoint:
+    - /bin/sh
+    - /isoloom/init/flag.sh
+    volumes:
+    - ../../ctf/flag.sh:/isoloom/init/flag.sh:ro
+    - frontend-ctf:/ctf
+    network_mode: service:frontend
+    environment:
+      CTF_FLAG_MAIN: ${CTF_FLAG_MAIN:-}
+    depends_on:
+      frontend:
+        condition: service_healthy
+      frontend-routes:
+        condition: service_healthy
+    restart: no
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
   isoloom-check:
     image: curlimages/curl:8.11.1
     profiles:
@@ -229,6 +252,8 @@ services:
         condition: service_healthy
       frontend:
         condition: service_healthy
+      frontend-init-1:
+        condition: service_completed_successfully
       frontend-routes:
         condition: service_healthy
     labels:
@@ -255,6 +280,8 @@ services:
         condition: service_healthy
       frontend:
         condition: service_healthy
+      frontend-init-1:
+        condition: service_completed_successfully
       frontend-routes:
         condition: service_healthy
     labels:
@@ -281,6 +308,8 @@ services:
         condition: service_healthy
       frontend:
         condition: service_healthy
+      frontend-init-1:
+        condition: service_completed_successfully
       frontend-routes:
         condition: service_healthy
     labels:
@@ -307,6 +336,8 @@ services:
         condition: service_healthy
       frontend:
         condition: service_healthy
+      frontend-init-1:
+        condition: service_completed_successfully
       frontend-routes:
         condition: service_healthy
     labels:
@@ -337,6 +368,10 @@ networks:
       isoloom.environment: secdevlabs-streaming
 volumes:
   db-data:
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: secdevlabs-streaming
+  frontend-ctf:
     labels:
       isoloom.managed: 'true'
       isoloom.environment: secdevlabs-streaming

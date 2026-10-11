@@ -1,0 +1,43 @@
+{
+  "objectives": [
+    {
+      "key": "main",
+      "title": "Read the flag",
+      "prompt": "Send a chat message that runs script and retrieve the flag (/ctf/flag).",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-secdevlabs-streaming}",
+      "hints": [
+        "Chat messages are inserted into the page as HTML.",
+        "Read about stored cross-site scripting."
+      ],
+      "steps": [
+        {
+          "key": "framework",
+          "title": "Identify the front end",
+          "prompt": "Which front-end framework renders the chat?",
+          "check": {
+            "answer": [
+              "angular"
+            ]
+          }
+        },
+        {
+          "key": "class",
+          "title": "Name the weakness",
+          "prompt": "Which XSS type is this?",
+          "check": {
+            "answer": [
+              "stored xss",
+              "stored",
+              "persistent xss",
+              "stored cross-site scripting"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
