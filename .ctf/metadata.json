@@ -1,8 +1,11 @@
 {
+  "project_name": "cyberlabs-secdevlabs-streaming",
+  "slug": "secdevlabs-streaming",
   "title": "secDevLabs Streaming",
   "description": "A live-streaming site built with Angular and Spring Boot on MariaDB, where viewers chat during a live. Chat messages are stored by the API and inserted into every viewer's page as HTML.",
-  "question": "Send a chat message that runs your own JavaScript in every viewer's browser. The flag is in /ctf/flag; client-side lab.",
-  "category": "WEB",
+  "category": "web",
   "difficulty": 1,
-  "evidence_kind": "SECRET"
+  "evidence_kind": "SECRET",
+  "capabilities": [],
+  "question": "Send a chat message that runs your own JavaScript in every viewer's browser. The flag is in /ctf/flag; client-side lab."
 }
